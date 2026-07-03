@@ -3,21 +3,52 @@
  * Docs: https://platform.minimax.io/docs/api-reference/music-generation
  * Response contains hex-encoded audio in data.audio.
  */
+
+const ALLOWED_MODELS = [
+  'music-2.6',
+  'music-2.6-free',
+  'music-cover',
+  'music-cover-free',
+] as const;
+
 interface MiniMaxResponse {
   data?: { audio?: string; status?: number };
   base_resp?: { status_code?: number; status_msg?: string };
+}
+
+function resolveModel(): string {
+  const raw = (process.env.MINIMAX_MODEL || 'music-2.6-free')
+    .trim()
+    .replace(/^["']|["']$/g, '');
+
+  if (ALLOWED_MODELS.includes(raw as (typeof ALLOWED_MODELS)[number])) {
+    return raw;
+  }
+
+  console.warn(`Invalid MINIMAX_MODEL "${raw}", falling back to music-2.6-free`);
+  return 'music-2.6-free';
+}
+
+function resolveApiHost(): string {
+  const host = (process.env.MINIMAX_API_HOST || 'https://api.minimax.io')
+    .trim()
+    .replace(/\/$/, '');
+  return host;
 }
 
 export async function generateSong(opts: {
   stylePrompt: string;
   lyrics: string;
 }): Promise<Buffer> {
-  const apiKey = process.env.MINIMAX_API_KEY;
+  const apiKey = process.env.MINIMAX_API_KEY?.trim();
   if (!apiKey) throw new Error('Missing MINIMAX_API_KEY');
-  const model = process.env.MINIMAX_MODEL || 'music-2.6-free';
+
+  const model = resolveModel();
+  const apiHost = resolveApiHost();
+  const url = `${apiHost}/v1/music_generation`;
 
   const doCall = async (): Promise<Buffer> => {
-    const res = await fetch('https://api.minimax.io/v1/music_generation', {
+    const res = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -27,6 +58,7 @@ export async function generateSong(opts: {
         model,
         prompt: opts.stylePrompt.slice(0, 2000),
         lyrics: opts.lyrics.slice(0, 3500),
+        output_format: 'hex',
         audio_setting: { sample_rate: 44100, bitrate: 256000, format: 'mp3' },
       }),
     });
@@ -36,14 +68,15 @@ export async function generateSong(opts: {
     }
     const json = (await res.json()) as MiniMaxResponse;
     if (json.base_resp && json.base_resp.status_code !== 0) {
-      throw new Error(`MiniMax error ${json.base_resp.status_code}: ${json.base_resp.status_msg}`);
+      throw new Error(
+        `MiniMax error ${json.base_resp.status_code}: ${json.base_resp.status_msg} (model=${model}, host=${apiHost})`
+      );
     }
     const hex = json.data?.audio;
     if (!hex) throw new Error('MiniMax returned no audio');
     return Buffer.from(hex, 'hex');
   };
 
-  // one retry
   try {
     return await doCall();
   } catch (e) {
