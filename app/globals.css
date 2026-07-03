@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+body {
+  @apply bg-paper text-ink font-body antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slow, .animate-bounce-sm { animation: none; }
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-grass px-8 py-4 font-semibold text-paper transition hover:bg-grassdeep focus:outline-none focus-visible:ring-4 focus-visible:ring-tennis disabled:opacity-50 disabled:cursor-not-allowed;
+}
+.btn-tennis {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-tennis px-6 py-3 font-semibold text-ink transition hover:bg-tennisdark focus:outline-none focus-visible:ring-4 focus-visible:ring-grass disabled:opacity-50;
+}
+.field {
+  @apply w-full rounded-xl border-2 border-ink/15 bg-white px-4 py-3 text-ink placeholder:text-ink/35 focus:border-grass focus:outline-none;
+}
+.label {
+  @apply mb-1.5 block text-sm font-semibold text-ink/80;
+}
+.hint {
+  @apply mt-1 text-xs text-ink/50;
+}
