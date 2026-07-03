@@ -21,7 +21,8 @@ Respond with ONLY valid JSON, no markdown fences, exactly this shape:
     { "arc": "tearjerker", "title": "...", "style_prompt": "...", "lyrics": "..." }
   ]
 }
-Lyrics formatting: section tags on their own line exactly as [Verse], [Chorus], [Bridge]; one lyric line per line using \\n; blank line (\\n\\n) between sections. Titles include the pet's name.`;
+Lyrics formatting: section tags on their own line exactly as [Verse], [Chorus], [Bridge]; one lyric line per line using \\n; blank line (\\n\\n) between sections. Titles include the pet's name.
+Each song should contain approximately 36–44 lyric lines (excluding section tags) for roughly 3 minutes of music. MiniMax has no duration knob — length is controlled entirely by lyric line count.`;
 
 function client(): Anthropic {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -53,7 +54,7 @@ export async function generateLyricVariants(
 
   const msg = await client().messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 4000,
+    max_tokens: 8000,
     system,
     messages: [
       {
