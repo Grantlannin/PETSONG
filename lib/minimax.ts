@@ -68,8 +68,17 @@ export async function generateSong(opts: {
     }
     const json = (await res.json()) as MiniMaxResponse;
     if (json.base_resp && json.base_resp.status_code !== 0) {
+      const code = json.base_resp.status_code;
+      const msg = json.base_resp.status_msg || 'unknown';
+      let hint = '';
+      if (code === 2061) {
+        hint =
+          model.includes('free')
+            ? ' Your key looks like a Token Plan key — set MINIMAX_MODEL=music-2.6 (not -free). Or use a pay-as-you-go API key from API Keys for music-2.6-free.'
+            : ' Your key may not include music. Use a Token Plan subscription key with music-2.6, or a pay-as-you-go API key with credits.';
+      }
       throw new Error(
-        `MiniMax error ${json.base_resp.status_code}: ${json.base_resp.status_msg} (model=${model}, host=${apiHost})`
+        `MiniMax error ${code}: ${msg} (model=${model}, host=${apiHost}).${hint}`
       );
     }
     const hex = json.data?.audio;
