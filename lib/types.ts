@@ -6,7 +6,7 @@ export type OrderStatus =
   | 'delivered'
   | 'failed';
 
-export interface Brief {
+export interface Brief extends Record<string, unknown> {
   pet_name: string;
   nickname?: string;
   pet_type: string;

@@ -1,0 +1,36 @@
+# Context for Cursor
+
+This repo is an APP BUILD TOOL, not just the finished product. Grant is using
+it as his workbench to build the real pet-song app inside of it.
+
+What that means in practice:
+
+- The core of the workbench is /lab (app/lab/page.tsx + app/api/lab/*):
+  a 4-column prompt lab — inferred intake form → editable songwriting prompt
+  → generated lyrics (with lint badges) → one-click MiniMax song generation.
+  Grant iterates on the lyric-writing prompt here until songs are right.
+- lib/lyrics-prompt.ts is the product's core IP. It is intentionally a blank
+  shell. Grant authors it himself, testing versions in /lab first. Do not
+  fill it in, "improve" it, or restate the JSON output format inside it —
+  the machine contract lives in lib/claude.ts (OUTPUT_CONTRACT) and must
+  stay there.
+- The customer funnel (/ → /create → mock payment → /preview → /song) is the
+  MVP being built. Payments (Stripe) and email (Resend) are deliberately
+  stubbed: app/api/mock-payment and app/api/mock-upsell are the exact seams
+  where real Stripe webhooks go later; app/api/select has the TODO(resend)
+  seam. Do not add Stripe or Resend dependencies until asked.
+- /dev/test is a quick end-to-end pipeline check with a hardcoded brief.
+- /dashboard is the admin view (ADMIN_PASSWORD cookie auth — same auth gates
+  the /lab APIs).
+
+Pipeline: Claude (claude-sonnet-4-6, writes lyrics + style prompts, 3 variants)
+→ MiniMax music-2.6 (sings them; MINIMAX_MODEL env var, music-2.6-free for
+testing) → ffmpeg 45s previews → Supabase Storage (songs-full private,
+songs-previews public).
+
+Song length is controlled by lyric line count (MiniMax has no duration
+setting) — keep that logic in the prompt/lint layer, not in code.
+
+Stack: Next.js 14 App Router, TypeScript, Tailwind, Supabase (service-role
+client in API routes only), deployed on Vercel. Long-running routes export
+maxDuration = 300.
