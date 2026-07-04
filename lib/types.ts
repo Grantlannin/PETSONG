@@ -37,11 +37,14 @@ export interface Brief extends Record<string, unknown> {
 }
 
 export interface SongVariant {
-  arc: 'funny' | 'sweet' | 'tearjerker';
+  arc: 'funny' | 'heartfelt';
   title: string;
   style_prompt: string;
   lyrics: string;
 }
+
+/** Number of lyric/audio variants per order (funny + heartfelt). */
+export const SONG_VARIANT_COUNT = 2;
 
 export interface OrderRow {
   id: string;

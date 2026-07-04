@@ -21,15 +21,15 @@ export default function LandingPage() {
 
         <p className="mt-6 max-w-2xl text-lg text-ink/70">
           Tell us about your pet — their name, their weird little habits, the story only you know.
-          In minutes, you&apos;ll hear three original songs written just about them. Pick the one
-          that makes you cry. Or laugh. Or both.
+          In minutes, you&apos;ll hear two original songs written just about them — one funny,
+          one heartfelt. Pick the one that makes you cry. Or laugh. Or both.
         </p>
 
         <Link href="/create" className="btn-primary mt-10 text-lg">
           Get Your Song — $37
         </Link>
         <p className="mt-3 font-mono text-xs text-ink/50">
-          3 songs generated · you pick your favorite · ready in ~2 minutes
+          2 songs generated · you pick your favorite · ready in ~2 minutes
         </p>
       </section>
 
@@ -42,12 +42,12 @@ export default function LandingPage() {
               d: 'Name, breed, the sock-stealing, the 9pm zoomies — the details that make them them.',
             },
             {
-              t: 'We write & record 3 songs',
-              d: 'A funny one, a sweet one, and a tearjerker. Each one is genuinely about your pet.',
+              t: 'We write & record 2 songs',
+              d: 'A funny one and a heartfelt one. Each one is genuinely about your pet.',
             },
             {
               t: 'Pick your favorite',
-              d: 'Preview all three. Keep the one you love — or unlock all three for a little more.',
+              d: 'Preview both. Keep the one you love — or unlock both for a little more.',
             },
           ].map((s, i) => (
             <div key={s.t}>

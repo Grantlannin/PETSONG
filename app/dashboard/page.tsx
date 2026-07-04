@@ -146,8 +146,8 @@ export default function DashboardPage() {
                   {JSON.stringify(o.brief, null, 2)}
                 </pre>
                 {o.error && <p className="mb-4 text-sm text-red-600">Error: {o.error}</p>}
-                <div className="grid gap-4 md:grid-cols-3">
-                  {[1, 2, 3].map((v) => {
+                <div className="grid gap-4 md:grid-cols-2">
+                  {[1, 2].map((v) => {
                     const s = o.songs.find((x) => x.variant === v);
                     const key = `${o.id}-${v}`;
                     return (

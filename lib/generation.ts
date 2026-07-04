@@ -6,7 +6,7 @@ import type { Brief, SongVariant } from './types';
 
 /**
  * Full pipeline for one order:
- * Claude (1 call, 3 lyric variants) -> MiniMax x3 in parallel -> upload full + preview.
+ * Claude (1 call, 2 lyric variants) -> MiniMax x2 in parallel -> upload full + preview.
  * Idempotent-ish: flips status paid -> generating first; bails if already past paid.
  */
 export async function runGeneration(orderId: string): Promise<void> {
@@ -31,7 +31,7 @@ export async function runGeneration(orderId: string): Promise<void> {
 
     const succeeded = results.filter((r) => r.status === 'fulfilled').length;
     if (succeeded === 0) {
-      throw new Error('All three song generations failed');
+      throw new Error('Both song generations failed');
     }
 
     await db.from('orders').update({ status: 'preview_ready' }).eq('id', orderId);

@@ -3,8 +3,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
   const { orderId, variant } = await req.json();
-  if (!orderId || ![1, 2, 3].includes(variant)) {
-    return NextResponse.json({ error: 'orderId and variant (1-3) required' }, { status: 400 });
+  if (!orderId || ![1, 2].includes(variant)) {
+    return NextResponse.json({ error: 'orderId and variant (1-2) required' }, { status: 400 });
   }
 
   const db = supabaseAdmin();

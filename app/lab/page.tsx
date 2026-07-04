@@ -259,7 +259,7 @@ export default function LabPage() {
         <section className="rounded-2xl border-2 border-ink/10 bg-white p-4 xl:col-span-7">
           <h2 className="font-display text-lg font-bold">Lyrics &amp; songs</h2>
           {busyLyrics && (
-            <p className="mt-2 text-sm text-ink/50">Claude is writing 3 versions… ~10–20s</p>
+            <p className="mt-2 text-sm text-ink/50">Claude is writing funny + heartfelt… ~10–20s</p>
           )}
           {!busyLyrics && variants.length === 0 && (
             <p className="mt-2 text-sm text-ink/50">

@@ -29,5 +29,5 @@ export const SAMPLE_BRIEF: Brief = {
   emotional_moments:
     'The night I came home crying from the hospital, she dragged her blankie to the couch and put her chin on my knee until I stopped shaking. She got me through my divorce — when I couldn\'t get out of bed, she\'d sit on the floor and stare at me like "I\'m still here." Twelve years of showing up.',
   occasion: 'birthday',
-  vibe: 'sweet',
+  vibe: 'heartfelt',
 };

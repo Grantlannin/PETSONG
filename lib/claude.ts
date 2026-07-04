@@ -3,11 +3,17 @@ import { LAB_INTAKE_FIELDS } from './lab-intake';
 import { LYRICS_SYSTEM_PROMPT } from './lyrics-prompt';
 import type { Brief, SongVariant } from './types';
 
+export const EXPECTED_VARIANT_COUNT = 2;
+
 /**
  * Always-on songwriting constraints — pipeline quality, not the master template
  * in lib/lyrics-prompt.ts (Grant owns that). Applied in lab and production.
  */
 export const INTAKE_FIDELITY_RULES = `You write personalized pet songs from a customer intake form. The intake IS the song — not inspiration for a generic pet song.
+
+EVERY WORD IS SIGNAL
+- Zero padding. Zero decoration. If a word doesn't carry a specific fact, nickname, behavior, joke, or feeling from the brief — cut it.
+- Shorter and specific beats longer and vague. No line exists just to rhyme or fill meter.
 
 SOURCE OF TRUTH (non-negotiable)
 - Every lyric line must trace to a specific fact the customer wrote: a name, nickname, behavior, ritual, joke, object, person, place, hatred, or memory from their brief.
@@ -54,10 +60,19 @@ BANNED unless the customer wrote it or occasion is memorial
 - Invented scenes, people, places, or habits not in the brief
 - Rainbow bridge / loss language unless occasion is memorial
 
-DRAMA & ARCS (heighten THEIR material, not generic emotion)
-- funny: punchlines from signature_behaviors, things_they_hate, memorable_inside_jokes, if_they_could_talk
-- sweet: signature_daily_rituals, favorite_things, special_relationships, what_makes_them_them
-- tearjerker: emotional_moments, quirks_nobody_else_would_know, if_they_could_talk — cinematic and dramatic, but every image must come from the brief
+TWO MODES — write exactly one song per mode, both using ONLY the brief:
+
+**funny**
+- Goal: make the family laugh and say "haha that's totally them."
+- Lead with signature_behaviors, things_they_hate, memorable_inside_jokes, if_they_could_talk, absurd rituals.
+- Punchlines over poetry. Exaggerate THEIR quirks — never invent new ones.
+- Tone: warm, playful, like retelling the funniest stories at dinner.
+
+**heartfelt**
+- Goal: deep meaning — make them feel something real.
+- Use visceral, direct-response language: plain words that hit the gut, not flowery poetry.
+- Lead with emotional_moments, special_relationships, quirks_nobody_else_would_know, what_makes_them_them.
+- Dramatic is good — but only by heightening facts they wrote. No manufactured sentiment.
 
 STRUCTURE
 - Pet name in the title and in the first two lyric lines of Verse 1
@@ -77,7 +92,7 @@ If paraphrased when their exact phrase would work — swap it back.`;
  * (or a lab override) is prepended as the system prompt and owns everything
  * about HOW the songs are written; this only pins WHAT comes back.
  */
-const OUTPUT_CONTRACT = `You will receive a customer brief about one pet. Write THREE complete, distinct personalized songs using ONLY facts from that brief (three different emotional takes).
+const OUTPUT_CONTRACT = `You will receive a customer brief about one pet. Write TWO complete, distinct personalized songs using ONLY facts from that brief — one funny, one heartfelt.
 
 For each song also write a style_prompt for the music model: under 300 characters, shaped like "<key>, <BPM> BPM, <genre>, <vocal type>, <2-3 mood words>".
 
@@ -85,8 +100,7 @@ Respond with ONLY valid JSON, no markdown fences, exactly this shape:
 {
   "variants": [
     { "arc": "funny",      "title": "...", "style_prompt": "...", "lyrics": "..." },
-    { "arc": "sweet",      "title": "...", "style_prompt": "...", "lyrics": "..." },
-    { "arc": "tearjerker", "title": "...", "style_prompt": "...", "lyrics": "..." }
+    { "arc": "heartfelt",  "title": "...", "style_prompt": "...", "lyrics": "..." }
   ]
 }
 Lyrics formatting: section tags on their own line exactly as [Verse], [Chorus], [Bridge]; one lyric line per line using \\n; blank line (\\n\\n) between sections. Titles include the pet's name.
@@ -121,7 +135,7 @@ function parseJson<T>(text: string): T {
 }
 
 /**
- * Generate the three lyric variants.
+ * Generate the two lyric variants (funny + heartfelt).
  * promptOverride: used by the /lab prompt bench to test edits live without
  * touching lib/lyrics-prompt.ts. Production passes nothing.
  */
@@ -147,14 +161,14 @@ export async function generateLyricVariants(
 
 ${briefText}
 
-Write the three songs now. Audit every line against this brief. JSON only.`,
+Write both songs now — funny and heartfelt. Audit every line against this brief. JSON only.`,
       },
     ],
   });
 
   const parsed = parseJson<{ variants: SongVariant[] }>(extractText(msg));
-  if (!parsed.variants || parsed.variants.length !== 3) {
-    throw new Error('Claude did not return 3 variants');
+  if (!parsed.variants || parsed.variants.length !== EXPECTED_VARIANT_COUNT) {
+    throw new Error(`Claude did not return ${EXPECTED_VARIANT_COUNT} variants`);
   }
   return parsed.variants;
 }

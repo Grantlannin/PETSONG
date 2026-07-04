@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Vinyl } from '@/lib/vinyl';
 
 const OCCASIONS = ['birthday', 'gotcha day', 'holiday gift', 'memorial', 'just because'];
-const VIBES = ['upbeat', 'sweet', 'tearjerker', 'surprise me'];
+const VIBES = ['funny', 'heartfelt', 'surprise me'];
 
 export default function CreatePage() {
   const router = useRouter();

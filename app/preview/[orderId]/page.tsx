@@ -23,8 +23,7 @@ interface StatusPayload {
 
 const ARC_LABELS: Record<string, string> = {
   funny: 'The Funny One',
-  sweet: 'The Sweet One',
-  tearjerker: 'The Tearjerker',
+  heartfelt: 'The Heartfelt One',
 };
 
 const LOADING_LINES = [
@@ -32,7 +31,7 @@ const LOADING_LINES = [
   (n: string) => `Teaching the band ${n}'s name…`,
   (n: string) => `Recording take one of ${n}'s chorus…`,
   (n: string) => `Getting the zoomies into verse two…`,
-  (n: string) => `Mixing ${n}'s three songs…`,
+  (n: string) => `Mixing ${n}'s two songs…`,
 ];
 
 export default function PreviewPage() {
@@ -138,20 +137,20 @@ export default function PreviewPage() {
     <main className="mx-auto max-w-3xl px-6 py-12">
       <div className="mb-2 flex items-center gap-3">
         <Vinyl size={44} />
-        <h1 className="font-display text-3xl font-black">{petName}&apos;s three songs</h1>
+        <h1 className="font-display text-3xl font-black">{petName}&apos;s two songs</h1>
       </div>
       <p className="mb-8 text-ink/70">
         45-second previews below.{' '}
         {data!.bundle
-          ? 'You unlocked all three — pick any to continue to your downloads.'
-          : 'Pick the one you love (included), or unlock all three.'}
+          ? 'You unlocked both — pick any to continue to your downloads.'
+          : 'Pick the one you love (included), or unlock both.'}
       </p>
 
       {!data!.bundle && (
         <div className="mb-8 flex flex-col items-center justify-between gap-3 rounded-2xl border-2 border-tennisdark bg-tennis/30 px-5 py-4 sm:flex-row">
-          <p className="font-semibold">Can&apos;t decide? Keep all 3 songs.</p>
+          <p className="font-semibold">Can&apos;t decide? Keep both songs.</p>
           <button className="btn-tennis" onClick={unlockAll} disabled={busy}>
-            Unlock all 3 — +$10 (TEST MODE)
+            Unlock both — +$10 (TEST MODE)
           </button>
         </div>
       )}
