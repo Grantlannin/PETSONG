@@ -1,6 +1,36 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { LAB_INTAKE_FIELDS } from './lab-intake';
 import { LYRICS_SYSTEM_PROMPT } from './lyrics-prompt';
 import type { Brief, SongVariant } from './types';
+
+/**
+ * Always-on songwriting constraints — pipeline quality, not the master template
+ * in lib/lyrics-prompt.ts (Grant owns that). Applied in lab and production.
+ */
+export const INTAKE_FIDELITY_RULES = `You write personalized pet songs from a customer intake form. The intake IS the song — not inspiration for a generic pet song.
+
+SOURCE OF TRUTH (non-negotiable)
+- Every lyric line must trace to a specific fact the customer wrote: a name, nickname, behavior, ritual, joke, object, person, place, hatred, or memory from their brief.
+- If a detail is not in the brief, do not invent it. No filler scenes, no made-up family members, no guessed breeds or hobbies.
+- Prefer the customer's exact images and phrases over vague paraphrase. "Steals socks from the hamper" beats "playful pup."
+
+BANNED unless the customer wrote it verbatim
+- Generic pet platitudes: "furry friend", "loyal companion", "best friend forever", "through thick and thin", "unconditional love", "paw prints on our hearts", "you'll always be in our hearts", empty "good boy/good girl" lines, vague "every day with you" sentiment
+- Cliché rhymes that fit any pet: heaven/side, friend/end, day/way, fur/sure as empty filler
+- Rainbow bridge language unless occasion is memorial
+
+DRAMA & ARCS (heighten THEIR material, not generic emotion)
+- funny: punchlines from signature_behaviors, things_they_hate, memorable_inside_jokes, if_they_could_talk
+- sweet: signature_daily_rituals, favorite_things, special_relationships, what_makes_them_them
+- tearjerker: emotional_moments, quirks_nobody_else_would_know, if_they_could_talk — cinematic and dramatic, but every image must come from the brief
+
+STRUCTURE
+- Pet name in the title and in the first two lyric lines of Verse 1
+- Use nickname(s) from the brief where natural
+- Each song must reference at least 10 distinct specific facts from the brief (name repeats don't count)
+- Each chorus hook must hinge on one concrete image or behavior from the brief — never a generic sentiment
+
+Before finalizing each song, audit every line: "Did the customer tell me this?" If no, rewrite or cut.`;
 
 /**
  * Machine contract — do not move this into lyrics-prompt.ts.
@@ -9,7 +39,7 @@ import type { Brief, SongVariant } from './types';
  * (or a lab override) is prepended as the system prompt and owns everything
  * about HOW the songs are written; this only pins WHAT comes back.
  */
-const OUTPUT_CONTRACT = `You will receive a JSON brief about one pet. Write THREE complete, distinct personalized songs from it (three different emotional takes).
+const OUTPUT_CONTRACT = `You will receive a customer brief about one pet. Write THREE complete, distinct personalized songs using ONLY facts from that brief (three different emotional takes).
 
 For each song also write a style_prompt for the music model: under 300 characters, shaped like "<key>, <BPM> BPM, <genre>, <vocal type>, <2-3 mood words>".
 
@@ -23,6 +53,18 @@ Respond with ONLY valid JSON, no markdown fences, exactly this shape:
 }
 Lyrics formatting: section tags on their own line exactly as [Verse], [Chorus], [Bridge]; one lyric line per line using \\n; blank line (\\n\\n) between sections. Titles include the pet's name.
 Each song should contain approximately 36–44 lyric lines (excluding section tags) for roughly 3 minutes of music. MiniMax has no duration knob — length is controlled entirely by lyric line count.`;
+
+const FIELD_LABELS = Object.fromEntries(LAB_INTAKE_FIELDS.map((f) => [f.key, f.label]));
+
+function formatBriefForModel(brief: Brief | Record<string, string>): string {
+  const sections: string[] = [];
+  for (const [key, raw] of Object.entries(brief)) {
+    const value = String(raw ?? '').trim();
+    if (!value) continue;
+    sections.push(`### ${FIELD_LABELS[key] ?? key}\n${value}`);
+  }
+  return sections.join('\n\n');
+}
 
 function client(): Anthropic {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -50,7 +92,11 @@ export async function generateLyricVariants(
   promptOverride?: string
 ): Promise<SongVariant[]> {
   const creative = (promptOverride ?? LYRICS_SYSTEM_PROMPT).trim();
-  const system = [creative, OUTPUT_CONTRACT].filter(Boolean).join('\n\n---\n\n');
+  const system = [creative, INTAKE_FIDELITY_RULES, OUTPUT_CONTRACT].filter(Boolean).join('\n\n---\n\n');
+  const briefText = formatBriefForModel(brief);
+  if (!briefText.trim()) {
+    throw new Error('Brief is empty — fill in the intake first');
+  }
 
   const msg = await client().messages.create({
     model: 'claude-sonnet-4-6',
@@ -59,7 +105,11 @@ export async function generateLyricVariants(
     messages: [
       {
         role: 'user',
-        content: `Here is the brief:\n${JSON.stringify(brief, null, 2)}\n\nWrite the three songs now. JSON only.`,
+        content: `Here is everything the customer provided. Use ONLY these details — do not invent anything not listed here.
+
+${briefText}
+
+Write the three songs now. Audit every line against this brief. JSON only.`,
       },
     ],
   });

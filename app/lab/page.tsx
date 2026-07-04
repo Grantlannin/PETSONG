@@ -226,12 +226,17 @@ export default function LabPage() {
             {showPrompt ? 'Hide' : 'Show'} lyric prompt (advanced)
           </button>
           {showPrompt && (
-            <textarea
-              className="field mt-2 min-h-40 font-mono !text-xs leading-relaxed"
-              placeholder="Songwriting system prompt — leave blank to let Claude improvise until you paste a winner from testing."
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-            />
+            <>
+              <p className="mt-2 text-xs text-ink/45">
+                Intake fidelity rules (no invented details, banned clichés) are always applied automatically.
+              </p>
+              <textarea
+                className="field mt-2 min-h-40 font-mono !text-xs leading-relaxed"
+                placeholder="Optional extra songwriting rules — leave blank to rely on intake fidelity + output contract only."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              />
+            </>
           )}
 
           <button
