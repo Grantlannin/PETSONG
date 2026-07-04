@@ -11,10 +11,28 @@ export interface Brief extends Record<string, unknown> {
   nickname?: string;
   pet_type: string;
   breed?: string;
-  quirks: string;
+  /** @deprecated legacy customer funnel field */
+  quirks?: string;
+  /** @deprecated legacy lab field */
   physical_detail?: string;
-  occasion: string;
+  /** @deprecated legacy lab field */
+  bond?: string;
+  /** @deprecated legacy lab field */
+  signature_moment?: string;
+  /** @deprecated legacy lab field */
   emotional_anchor?: string;
+  personality?: string;
+  what_makes_them_them?: string;
+  signature_daily_rituals?: string;
+  memorable_inside_jokes?: string;
+  signature_behaviors?: string;
+  favorite_things?: string;
+  things_they_hate?: string;
+  special_relationships?: string;
+  if_they_could_talk?: string;
+  quirks_nobody_else_would_know?: string;
+  emotional_moments?: string;
+  occasion: string;
   vibe?: string;
 }
 
