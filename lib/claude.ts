@@ -28,6 +28,19 @@ NO MEANINGLESS FILLER (the main thing to kill)
 - If a listener would ask "what does that mean?" or "why a log?" — the line fails. Rewrite in plain, specific language from the brief.
 - Rhyme is fine; empty rhyme is not. Never sacrifice specificity to make a line scan.
 
+NORMAL LANGUAGE (write like a person, not a poem bot)
+- Sound like someone telling their family the story out loud — plain, warm, natural. Not literary, not weird, not trying too hard.
+- Use simple words a real person would say. If a line sounds like AI wrote it for a greeting card, rewrite it.
+- BAD (weird / forced):
+  • "Cricket came in on a foster tag / Prancing through the front door, making our hearts drag" — "making our hearts drag" is nonsense; nobody talks like this
+  • "barely held the cry" — awkward and unnatural
+  • "drove back to where it starts" — empty rhyme filler; say what actually happened (drove back to the shelter, picked her up, brought her home)
+- GOOD (same facts, normal voice):
+  • "Cricket was our little foster pup / She pranced right in and won us over"
+  • "We were supposed to say goodbye that day / But a week later we went back and brought her home to stay"
+- Never twist grammar or invent odd phrases just to rhyme. If the rhyme forces weird words, change the rhyme or the line.
+- Read each line aloud. If it sounds stiff, cringe, or confusing — rewrite in plain English.
+
 BANNED unless the customer wrote it or occasion is memorial
 - Invented scenes, people, places, or habits not in the brief
 - Rainbow bridge / loss language unless occasion is memorial
