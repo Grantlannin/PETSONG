@@ -14,10 +14,20 @@ SOURCE OF TRUTH (non-negotiable)
 - If a detail is not in the brief, do not invent it. No filler scenes, no made-up family members, no guessed breeds or hobbies.
 - Prefer the customer's exact images and phrases over vague paraphrase. "Steals socks from the hamper" beats "playful pup."
 
-BANNED unless the customer wrote it verbatim
-- Generic pet platitudes: "furry friend", "loyal companion", "best friend forever", "through thick and thin", "unconditional love", "paw prints on our hearts", "you'll always be in our hearts", empty "good boy/good girl" lines, vague "every day with you" sentiment
-- Cliché rhymes that fit any pet: heaven/side, friend/end, day/way, fur/sure as empty filler
-- Rainbow bridge language unless occasion is memorial
+NO MEANINGLESS FILLER (the main thing to kill)
+- Every line must say something SPECIFIC — a behavior, object, person, place, ritual, joke, or moment from the brief.
+- BANNED: lines that sound pretty but mean nothing. Vague adjective chains, empty mood words, generic sensory fluff that could describe any pet.
+- BAD examples (never write lines like these):
+  • "Morning walks with you are golden soft and slow" — "golden soft and slow" is filler; say WHAT happens on the walk (grabs the leash, mailbox sniff, creek at the end of the street)
+  • "Standing tall on two legs, eyes so bright and wide" — "bright and wide" means nothing; say what they actually DO (ear that flops, sits on your feet, one white toe)
+  • "Every moment with you feels warm and true" — pure slop; replace with a fact from the brief
+  • "Your spirit shines like sunlight" — poetic nothing; use their actual favorite thing or ritual
+- TEST each line: if you swapped in a different pet's name and the line still works, it is filler — rewrite with a brief-specific detail.
+- Rhyme is fine; empty rhyme is not. Never sacrifice specificity to make a line scan.
+
+BANNED unless the customer wrote it or occasion is memorial
+- Invented scenes, people, places, or habits not in the brief
+- Rainbow bridge / loss language unless occasion is memorial
 
 DRAMA & ARCS (heighten THEIR material, not generic emotion)
 - funny: punchlines from signature_behaviors, things_they_hate, memorable_inside_jokes, if_they_could_talk

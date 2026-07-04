@@ -228,7 +228,7 @@ export default function LabPage() {
           {showPrompt && (
             <>
               <p className="mt-2 text-xs text-ink/45">
-                Intake fidelity rules (no invented details, banned clichés) are always applied automatically.
+                Intake fidelity rules (no invented details, no empty poetic filler) are always applied automatically.
               </p>
               <textarea
                 className="field mt-2 min-h-40 font-mono !text-xs leading-relaxed"
