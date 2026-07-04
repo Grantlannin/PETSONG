@@ -227,12 +227,18 @@ export default function LabPage() {
           </button>
           {showPrompt && (
             <>
-              <p className="mt-2 text-xs text-ink/45">
-                Intake fidelity rules (no invented details, no empty poetic filler) are always applied automatically.
-              </p>
+              <label className="label !mb-1 !mt-3 !text-xs text-ink/50">
+                Intake fidelity rules (always applied)
+              </label>
+              <pre className="max-h-48 overflow-y-auto rounded-xl border border-ink/10 bg-paper p-3 font-mono text-[10px] leading-relaxed whitespace-pre-wrap text-ink/70">
+                {INTAKE_FIDELITY_RULES.trim()}
+              </pre>
+              <label className="label !mb-1 !mt-3 !text-xs text-ink/50">
+                Extra songwriting rules (optional)
+              </label>
               <textarea
-                className="field mt-2 min-h-40 font-mono !text-xs leading-relaxed"
-                placeholder="Optional extra songwriting rules — leave blank to rely on intake fidelity + output contract only."
+                className="field min-h-24 font-mono !text-xs leading-relaxed"
+                placeholder="Optional — leave blank to use fidelity rules + output contract only."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
               />
