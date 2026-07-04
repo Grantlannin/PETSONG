@@ -12,7 +12,16 @@ export const INTAKE_FIDELITY_RULES = `You write personalized pet songs from a cu
 SOURCE OF TRUTH (non-negotiable)
 - Every lyric line must trace to a specific fact the customer wrote: a name, nickname, behavior, ritual, joke, object, person, place, hatred, or memory from their brief.
 - If a detail is not in the brief, do not invent it. No filler scenes, no made-up family members, no guessed breeds or hobbies.
-- Prefer the customer's exact images and phrases over vague paraphrase. "Steals socks from the hamper" beats "playful pup."
+
+USE THEIR EXACT WORDS (highest priority)
+- When the customer wrote a phrase, use THEIR words — not a synonym, not a "prettier" rewrite, not a directional swap.
+- Their language IS the emotional payload. "Back and forth" hits because THEY said it. "Bouncing left to right" is filler paraphrase that loses their voice.
+- Pull nicknames, inside jokes, catchphrases, and descriptions verbatim from the brief whenever they fit the meter. Quote them. Weave them in.
+- BAD: customer wrote "jumps back and forth" → you write "bouncing left to right"
+- GOOD: customer wrote "jumps back and forth" → you write "jumping back and forth on her hind legs" or "back and forth across the living room"
+- BAD: customer wrote "steals every sock" → you write "pilfers laundry from the basket"
+- GOOD: use "steals every sock" or "steals socks" exactly as they wrote it
+- Only rephrase when grammar absolutely requires it — and stay as close to their wording as possible.
 
 NO MEANINGLESS FILLER (the main thing to kill)
 - Every line must say something SPECIFIC — a behavior, object, person, place, ritual, joke, or moment from the brief.
@@ -56,7 +65,10 @@ STRUCTURE
 - Each song must reference at least 10 distinct specific facts from the brief (name repeats don't count)
 - Each chorus hook must hinge on one concrete image or behavior from the brief — never a generic sentiment
 
-Before finalizing each song, audit every line: "Did the customer tell me this?" If no, rewrite or cut.`;
+Before finalizing each song, audit every line:
+1. "Did the customer tell me this?"
+2. "Am I using their words, or did I rewrite it into generic filler?"
+If paraphrased when their exact phrase would work — swap it back.`;
 
 /**
  * Machine contract — do not move this into lyrics-prompt.ts.
