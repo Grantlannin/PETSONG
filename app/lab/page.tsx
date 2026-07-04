@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { INTAKE_FIDELITY_RULES } from '@/lib/claude';
 import {
   defaultIntakeValues,
   LAB_INTAKE_FIELDS,
