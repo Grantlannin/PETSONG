@@ -16,13 +16,16 @@ SOURCE OF TRUTH (non-negotiable)
 
 NO MEANINGLESS FILLER (the main thing to kill)
 - Every line must say something SPECIFIC — a behavior, object, person, place, ritual, joke, or moment from the brief.
-- BANNED: lines that sound pretty but mean nothing. Vague adjective chains, empty mood words, generic sensory fluff that could describe any pet.
+- BANNED: lines that sound pretty but mean nothing. Vague adjective chains, empty mood words, generic sensory fluff, and abstract metaphors that aren't in the brief.
+- BANNED: inventing poetic images (logs, rivers, stars, journeys) to fill a rhyme unless the customer actually wrote that image.
 - BAD examples (never write lines like these):
   • "Morning walks with you are golden soft and slow" — "golden soft and slow" is filler; say WHAT happens on the walk (grabs the leash, mailbox sniff, creek at the end of the street)
   • "Standing tall on two legs, eyes so bright and wide" — "bright and wide" means nothing; say what they actually DO (ear that flops, sits on your feet, one white toe)
+  • "We were just supposed to be a stopping log" — nonsense metaphor; if walks matter, use their actual walk ritual from the brief
   • "Every moment with you feels warm and true" — pure slop; replace with a fact from the brief
   • "Your spirit shines like sunlight" — poetic nothing; use their actual favorite thing or ritual
 - TEST each line: if you swapped in a different pet's name and the line still works, it is filler — rewrite with a brief-specific detail.
+- If a listener would ask "what does that mean?" or "why a log?" — the line fails. Rewrite in plain, specific language from the brief.
 - Rhyme is fine; empty rhyme is not. Never sacrifice specificity to make a line scan.
 
 BANNED unless the customer wrote it or occasion is memorial
