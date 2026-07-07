@@ -5,6 +5,7 @@ import { INTAKE_FIDELITY_RULES } from '@/lib/claude';
 import {
   defaultIntakeValues,
   LAB_INTAKE_FIELDS,
+  labSelectLabel,
   lineCountStatus,
   TARGET_LINE_MAX,
   TARGET_LINE_MIN,
@@ -192,18 +193,9 @@ export default function LabPage() {
                     value={values[f.key] || ''}
                     onChange={(e) => setValues((v) => ({ ...v, [f.key]: e.target.value }))}
                   >
-                    {f.key === 'vibe' ? (
-                      <>
-                        <option value="">No preference</option>
-                        {(f.options || []).filter(Boolean).map((o) => (
-                          <option key={o} value={o}>{o}</option>
-                        ))}
-                      </>
-                    ) : (
-                      (f.options || []).map((o) => (
-                        <option key={o} value={o}>{o.replace(/_/g, ' ')}</option>
-                      ))
-                    )}
+                    {(f.options || []).map((o) => (
+                      <option key={o} value={o}>{labSelectLabel(f.key, o)}</option>
+                    ))}
                   </select>
                 ) : (
                   <input

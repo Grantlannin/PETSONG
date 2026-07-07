@@ -11,6 +11,19 @@ export interface LabField {
   required: boolean;
 }
 
+export const LAB_GENRES = [
+  { value: 'pop', label: 'POP' },
+  { value: 'jazz', label: 'Jazz' },
+  { value: '80s_rock', label: "80's rock" },
+] as const;
+
+export function labSelectLabel(fieldKey: string, value: string): string {
+  if (fieldKey === 'genre') {
+    return LAB_GENRES.find((g) => g.value === value)?.label ?? value;
+  }
+  return value.replace(/_/g, ' ');
+}
+
 /**
  * Fixed lab intake — concrete + emotional fields for personalized songs.
  * Edit values in /lab; field set stays stable so briefs compare cleanly.
@@ -41,46 +54,45 @@ export const LAB_INTAKE_FIELDS: LabField[] = [
     required: true,
   },
   {
-    key: 'breed',
-    label: 'Breed or mix (optional)',
-    type: 'text',
-    placeholder: 'Golden Retriever, mystery mutt',
-    sample: SAMPLE_BRIEF.breed || '',
+    key: 'physical_features',
+    label: 'What do they look like? Any unique physical features?',
+    type: 'textarea',
+    placeholder: 'Golden fluff, one ear that never stands up, crooked tail, one white toe…',
+    hint: 'Concrete visuals only you would notice.',
+    sample: String(SAMPLE_BRIEF.physical_features || ''),
     required: false,
   },
   {
     key: 'personality',
-    label: 'Personality',
+    label: 'Personality & what makes them "them"',
     type: 'textarea',
     placeholder:
-      'Goofy, gentle, dramatic. On their best day they… Share a few stories that show who they really are.',
-    hint: 'Describe your pet in a few words — goofy, stubborn, protective, gentle, dramatic, anxious, mischievous, or something else.',
+      'Goofy, gentle, dramatic — and the little habits that make your family say "that\'s so them."',
+    hint: 'Who they are on their best day, plus the quirks and routines that are unmistakably them.',
     sample: String(SAMPLE_BRIEF.personality || ''),
     required: true,
   },
   {
-    key: 'what_makes_them_them',
-    label: 'What Makes Them "Them"',
+    key: 'signature_behaviors',
+    label: 'Signature things they do / behaviors',
     type: 'textarea',
     placeholder:
-      'The little habits and routines that make your family say, "That\'s so them."',
-    hint: 'Funny quirks, routines, or things they always do.',
-    sample: String(SAMPLE_BRIEF.what_makes_them_them || ''),
+      'Morning rituals, zoomies, stealing socks, weird noises, how they greet people, daily routines they never skip…',
+    hint: 'Daily rituals + famous behaviors — anything that instantly reminds people of them.',
+    sample: String(SAMPLE_BRIEF.signature_behaviors || ''),
     required: false,
   },
   {
-    key: 'signature_daily_rituals',
-    label: 'Signature Daily Rituals',
+    key: 'favorite_things',
+    label: 'Favorite things / toys',
     type: 'textarea',
-    placeholder:
-      'First thing in the morning, when someone comes home, at mealtime, during walks, before bed…',
-    hint: 'Walk us through their daily routine — rituals they never skip.',
-    sample: String(SAMPLE_BRIEF.signature_daily_rituals || ''),
+    placeholder: 'Favorite toys, treats, foods, places, people, activities, comfort items.',
+    sample: String(SAMPLE_BRIEF.favorite_things || ''),
     required: false,
   },
   {
     key: 'memorable_inside_jokes',
-    label: 'Memorable Inside Jokes',
+    label: 'Memorable inside jokes',
     type: 'textarea',
     placeholder: 'Family nicknames, catchphrases, funny stories only people who know them would get.',
     hint: 'The more specific, the better.',
@@ -88,58 +100,31 @@ export const LAB_INTAKE_FIELDS: LabField[] = [
     required: false,
   },
   {
-    key: 'signature_behaviors',
-    label: 'Signature Behaviors',
-    type: 'textarea',
-    placeholder:
-      'Zoomies, stealing socks, demanding treats, weird noises, odd sleeping positions, special greetings…',
-    hint: 'What they\'re famous for — anything that instantly reminds people of them.',
-    sample: String(SAMPLE_BRIEF.signature_behaviors || ''),
-    required: false,
-  },
-  {
-    key: 'favorite_things',
-    label: 'Favorite Things / Toys',
-    type: 'textarea',
-    placeholder: 'Favorite toys, treats, foods, places, people, activities, comfort items.',
-    hint: 'What makes them happiest?',
-    sample: String(SAMPLE_BRIEF.favorite_things || ''),
-    required: false,
-  },
-  {
     key: 'things_they_hate',
-    label: 'Things They Hate',
+    label: 'Things they hate / what they do in rebellion',
     type: 'textarea',
-    placeholder: 'Vacuum, baths, squirrels, thunderstorms, nail trims, the mail carrier…',
-    hint: 'Anything they have strong opinions about.',
+    placeholder: 'Vacuum, baths, squirrels — and the dramatic way they protest…',
+    hint: 'What they refuse to tolerate and how they act out about it.',
     sample: String(SAMPLE_BRIEF.things_they_hate || ''),
     required: false,
   },
   {
     key: 'quirks_nobody_else_would_know',
-    label: 'Quirks Nobody Else Would Know',
+    label: 'Quirks nobody else would know',
     type: 'textarea',
     placeholder: 'Tiny details only someone who lives with them would notice.',
-    hint: 'Little habits or moments that make them one of a kind — good fuel for the heartfelt song.',
+    hint: 'Little habits or moments that make them one of a kind.',
     sample: String(SAMPLE_BRIEF.quirks_nobody_else_would_know || ''),
     required: false,
   },
   {
-    key: 'occasion',
-    label: 'Occasion',
+    key: 'genre',
+    label: 'Genre',
     type: 'select',
-    options: ['birthday', 'gotcha_day', 'memorial', 'just_because'],
-    sample: SAMPLE_BRIEF.occasion,
+    options: LAB_GENRES.map((g) => g.value),
+    hint: 'Both songs use this genre in their style prompt.',
+    sample: SAMPLE_BRIEF.genre || 'pop',
     required: true,
-  },
-  {
-    key: 'vibe',
-    label: 'Vibe preference (optional)',
-    type: 'select',
-    options: ['', 'funny', 'heartfelt'],
-    hint: 'We still generate both modes — this nudges the set.',
-    sample: SAMPLE_BRIEF.vibe || '',
-    required: false,
   },
 ];
 

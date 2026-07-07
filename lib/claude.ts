@@ -60,9 +60,9 @@ NORMAL LANGUAGE (write like a person, not a poem bot)
 - Never twist grammar or invent odd phrases just to rhyme. If the rhyme forces weird words, change the rhyme or the line.
 - Read each line aloud. If it sounds stiff, cringe, or confusing — rewrite in plain English.
 
-BANNED unless the customer wrote it or occasion is memorial
+BANNED unless the customer wrote it
 - Invented scenes, people, places, or habits not in the brief
-- Rainbow bridge / loss language unless occasion is memorial
+- Rainbow bridge / loss language unless the customer wrote about loss
 
 TWO MODES — write exactly one song per mode, both using ONLY the brief:
 
@@ -75,9 +75,11 @@ TWO MODES — write exactly one song per mode, both using ONLY the brief:
 **heartfelt**
 - Goal: deep meaning — make them feel something real.
 - Structure: setup the emotional stakes from their story → gut-punch payoff in plain, visceral language.
-- Lead with quirks_nobody_else_would_know, what_makes_them_them, signature_daily_rituals, personality.
+- Lead with quirks_nobody_else_would_know, personality, signature_behaviors, physical_features.
 - Dramatic is good — but the feeling comes from setup → landing on THEIR facts, not manufactured sentiment.
 
+GENRE
+- The brief includes a genre (POP, Jazz, or 80's rock). Both style_prompts MUST use that genre — match BPM, instrumentation, and vocal style to it.
 STRUCTURE
 - Pet name in the title and in the first two lyric lines of Verse 1
 - Use nickname(s) from the brief where natural
@@ -98,7 +100,7 @@ If a line does neither — cut it or rewrite.`;
  */
 const OUTPUT_CONTRACT = `You will receive a customer brief about one pet. Write TWO complete, distinct personalized songs using ONLY facts from that brief — one funny, one heartfelt.
 
-For each song also write a style_prompt for the music model: under 300 characters, shaped like "<key>, <BPM> BPM, <genre>, <vocal type>, <2-3 mood words>".
+For each song also write a style_prompt for the music model: under 300 characters, shaped like "<key>, <BPM> BPM, <genre from brief>, <vocal type>, <2-3 mood words>". Use the customer's chosen genre for both songs.
 
 Respond with ONLY valid JSON, no markdown fences, exactly this shape:
 {
