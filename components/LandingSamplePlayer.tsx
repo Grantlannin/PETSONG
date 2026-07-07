@@ -39,7 +39,7 @@ function SampleCard({
         <Vinyl size={52} spinning={active} />
       </div>
       <p className="mt-4 font-mono text-[10px] text-ink/40">
-        {active ? 'Playing chorus & bridge…' : 'Tap to preview · 10 seconds'}
+        {active ? 'Playing bridge → chorus…' : 'Tap to preview · 10 seconds'}
       </p>
     </button>
   );
@@ -195,7 +195,7 @@ export function LandingSamplePlayer() {
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-ink/50">Try before you buy</p>
         <h2 className="mt-2 font-display text-2xl font-black md:text-3xl">Hear what yours could sound like</h2>
         <p className="mx-auto mt-2 max-w-lg text-sm text-ink/60">
-          Real songs from a real pet story — previews jump to the chorus and bridge, not the intro.
+          Real songs from a real pet story — previews play the last lines of the bridge into the chorus.
         </p>
       </div>
 

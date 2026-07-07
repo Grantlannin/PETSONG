@@ -1,41 +1,54 @@
-/** Rough seconds per sung lyric line — used to seek previews to chorus/bridge. */
+/** Rough seconds per sung lyric line — used to seek landing previews. */
 const SEC_PER_LINE = 3.4;
 
-function lyricLinesBeforeSection(lyrics: string, sectionName: string): number | null {
-  const target = sectionName.toLowerCase();
-  let count = 0;
-  let found = false;
+interface LyricSection {
+  name: string;
+  lines: string[];
+}
+
+function parseSections(lyrics: string): LyricSection[] {
+  const sections: LyricSection[] = [];
+  let current: LyricSection | null = null;
 
   for (const line of lyrics.split('\n')) {
     const t = line.trim();
     if (!t) continue;
     const tag = t.match(/^\[(.+)\]$/);
     if (tag) {
-      if (tag[1].toLowerCase() === target) {
-        found = true;
-        break;
-      }
+      current = { name: tag[1].toLowerCase(), lines: [] };
+      sections.push(current);
       continue;
     }
-    count++;
+    if (current) current.lines.push(t);
   }
 
-  return found ? count : null;
+  return sections;
+}
+
+function linesBeforeSection(sections: LyricSection[], index: number): number {
+  let count = 0;
+  for (let i = 0; i < index; i++) count += sections[i].lines.length;
+  return count;
 }
 
 /**
- * Where to start a landing preview so it hits the bridge + final chorus, not the intro.
- * Prefers [Bridge]; falls back to first [Chorus].
+ * Landing preview: last 2 lines of [Bridge] + the [Chorus] that follows.
+ * Falls back to first [Chorus] if there is no bridge.
  */
 export function estimatePreviewStartSec(lyrics: string): number {
-  const bridgeLines = lyricLinesBeforeSection(lyrics, 'bridge');
-  if (bridgeLines != null) {
-    return Math.max(0, bridgeLines * SEC_PER_LINE);
+  const sections = parseSections(lyrics);
+  const bridgeIdx = sections.findIndex((s) => s.name === 'bridge');
+
+  if (bridgeIdx >= 0) {
+    const bridge = sections[bridgeIdx];
+    const linesBeforeBridge = linesBeforeSection(sections, bridgeIdx);
+    const skipIntoBridge = Math.max(0, bridge.lines.length - 2);
+    return (linesBeforeBridge + skipIntoBridge) * SEC_PER_LINE;
   }
 
-  const chorusLines = lyricLinesBeforeSection(lyrics, 'chorus');
-  if (chorusLines != null) {
-    return Math.max(0, chorusLines * SEC_PER_LINE);
+  const chorusIdx = sections.findIndex((s) => s.name === 'chorus');
+  if (chorusIdx >= 0) {
+    return linesBeforeSection(sections, chorusIdx) * SEC_PER_LINE;
   }
 
   return 0;

@@ -39,7 +39,7 @@ export async function generateLandingSamples(): Promise<GeneratedLandingSample[]
     const { startSec: previewStartSec } = previewWindow(variant.lyrics, 10);
 
     const full = await generateSong({ stylePrompt: variant.style_prompt, lyrics: variant.lyrics });
-    // Vercel serverless has no ffmpeg — upload full song; homepage player seeks to bridge/chorus.
+    // Vercel serverless has no ffmpeg — upload full song; player seeks to bridge tail + chorus.
     const storagePath = `landing/${genre}.mp3`;
 
     const up = await db.storage
