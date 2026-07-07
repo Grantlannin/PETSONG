@@ -45,13 +45,20 @@ function SampleCard({
   );
 }
 
+function clampStartSec(audio: HTMLAudioElement, startSec: number, durationSec: number): number {
+  if (!Number.isFinite(audio.duration) || audio.duration <= 0) return startSec;
+  return Math.min(startSec, Math.max(0, audio.duration - durationSec - 0.25));
+}
+
 export function LandingSamplePlayer() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioMapRef = useRef<Map<string, HTMLAudioElement>>(new Map());
+  const tickRef = useRef<number | null>(null);
   const [samples, setSamples] = useState<LandingSample[]>(() => landingSamplesWithUrls());
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
   const startSecRef = useRef(0);
+  const endSecRef = useRef(10);
 
   useEffect(() => {
     const metaUrl = landingSampleMetaUrl();
@@ -77,15 +84,87 @@ export function LandingSamplePlayer() {
       .catch(() => {});
   }, []);
 
-  function stop() {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
+  // Preload metadata so play() works inside the click handler (browser gesture rules).
+  useEffect(() => {
+    const map = audioMapRef.current;
+    for (const sample of samples) {
+      let audio = map.get(sample.id);
+      if (!audio) {
+        audio = new Audio(sample.src);
+        audio.preload = 'metadata';
+        map.set(sample.id, audio);
+      } else if (audio.src !== sample.src) {
+        audio.src = sample.src;
+        audio.load();
+      }
     }
-    startSecRef.current = 0;
+  }, [samples]);
+
+  useEffect(() => {
+    return () => {
+      if (tickRef.current != null) cancelAnimationFrame(tickRef.current);
+      audioMapRef.current.forEach((a) => {
+        a.pause();
+        a.src = '';
+      });
+      audioMapRef.current.clear();
+    };
+  }, []);
+
+  function stopTick() {
+    if (tickRef.current != null) {
+      cancelAnimationFrame(tickRef.current);
+      tickRef.current = null;
+    }
+  }
+
+  function stopAll() {
+    stopTick();
+    audioMapRef.current.forEach((a) => {
+      a.pause();
+    });
     setPlayingId(null);
     setProgress(0);
+  }
+
+  function startTick(audio: HTMLAudioElement, id: string) {
+    stopTick();
+    const tick = () => {
+      const start = startSecRef.current;
+      const end = endSecRef.current;
+      const elapsed = audio.currentTime - start;
+      setProgress(Math.min(1, Math.max(0, elapsed / (end - start))));
+      if (audio.currentTime >= end - 0.05) {
+        stopAll();
+        return;
+      }
+      tickRef.current = requestAnimationFrame(tick);
+    };
+    tickRef.current = requestAnimationFrame(tick);
+    setPlayingId(id);
+  }
+
+  function seekAndPlay(audio: HTMLAudioElement, sample: LandingSample, id: string) {
+    const durationSec = sample.durationSec;
+    let startSec = sample.previewStartSec ?? 0;
+
+    const applySeek = () => {
+      startSec = clampStartSec(audio, startSec, durationSec);
+      startSecRef.current = startSec;
+      endSecRef.current = startSec + durationSec;
+      audio.currentTime = startSec;
+    };
+
+    if (audio.readyState >= 1) applySeek();
+    else audio.addEventListener('loadedmetadata', applySeek, { once: true });
+
+    void audio
+      .play()
+      .then(() => startTick(audio, id))
+      .catch(() => {
+        stopAll();
+        setLoadError('Tap failed to start audio — try again or use a different browser.');
+      });
   }
 
   function play(id: string) {
@@ -93,33 +172,21 @@ export function LandingSamplePlayer() {
     if (!sample) return;
 
     if (playingId === id) {
-      stop();
+      stopAll();
       return;
     }
 
-    stop();
+    stopAll();
     setLoadError(null);
-    const audio = audioRef.current;
-    if (!audio) return;
 
-    const startSec = sample.previewStartSec ?? 0;
-    startSecRef.current = startSec;
+    const audio = audioMapRef.current.get(id);
+    if (!audio) {
+      setLoadError('Preview still loading — wait a second and tap again.');
+      return;
+    }
 
-    const begin = () => {
-      audio.currentTime = startSec;
-      setPlayingId(id);
-      void audio.play().catch(() => {
-        setPlayingId(null);
-        setProgress(0);
-        setLoadError(
-          'Preview clips not uploaded yet. In /lab, click “Generate landing demos” (one-time, ~5 min).'
-        );
-      });
-    };
-
-    audio.src = sample.src;
-    if (audio.readyState >= 1) begin();
-    else audio.addEventListener('loadedmetadata', begin, { once: true });
+    // play() must run in the click stack — do not await metadata first.
+    seekAndPlay(audio, sample, id);
   }
 
   return (
@@ -156,26 +223,9 @@ export function LandingSamplePlayer() {
           {loadError || (playingId ? '10-second preview' : 'Scroll → tap a genre · 10 seconds each')}
         </p>
         {loadError && (
-          <p className="mt-2 text-center text-xs text-red-600">
-            <a href="/lab" className="font-semibold underline">Open lab</a> to generate clips, then refresh this page.
-          </p>
+          <p className="mt-2 text-center text-xs text-red-600">{loadError}</p>
         )}
       </div>
-
-      <audio
-        ref={audioRef}
-        preload="none"
-        onTimeUpdate={(e) => {
-          const audio = e.currentTarget;
-          const sample = samples.find((s) => s.id === playingId);
-          const duration = sample?.durationSec ?? 10;
-          const start = startSecRef.current;
-          const elapsed = audio.currentTime - start;
-          setProgress(Math.min(1, Math.max(0, elapsed / duration)));
-          if (audio.currentTime >= start + duration) stop();
-        }}
-        onEnded={stop}
-      />
     </section>
   );
 }
