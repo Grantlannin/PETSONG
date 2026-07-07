@@ -32,12 +32,12 @@ export async function generateLandingSamples(): Promise<GeneratedLandingSample[]
     const variant = variants.find((v) => v.arc === arc) ?? variants[0];
 
     const full = await generateSong({ stylePrompt: variant.style_prompt, lyrics: variant.lyrics });
-    const clip = await makeClip(full, 10);
+    // Vercel serverless has no ffmpeg binary — upload full song; homepage player stops at 10s.
     const storagePath = `landing/${genre}.mp3`;
 
     const up = await db.storage
       .from('songs-previews')
-      .upload(storagePath, clip, { contentType: 'audio/mpeg', upsert: true });
+      .upload(storagePath, full, { contentType: 'audio/mpeg', upsert: true });
     if (up.error) throw new Error(`Upload ${genre} failed: ${up.error.message}`);
 
     const publicUrl = db.storage.from('songs-previews').getPublicUrl(storagePath).data.publicUrl;

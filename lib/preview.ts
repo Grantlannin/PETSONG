@@ -1,11 +1,26 @@
 import ffmpegPath from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
+import { existsSync } from 'fs';
 import { writeFile, readFile, unlink } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
 
-if (ffmpegPath) ffmpeg.setFfmpegPath(ffmpegPath as unknown as string);
+function resolveFfmpegPath(): string {
+  const candidates = [
+    ffmpegPath as string | null,
+    join(process.cwd(), 'node_modules', 'ffmpeg-static', 'ffmpeg'),
+  ].filter(Boolean) as string[];
+  for (const p of candidates) {
+    if (existsSync(p)) {
+      ffmpeg.setFfmpegPath(p);
+      return p;
+    }
+  }
+  throw new Error(
+    'ffmpeg binary not found — preview trimming unavailable in this environment'
+  );
+}
 
 /** Trim a full song to a short mp3 clip. */
 export async function makeClip(
@@ -13,6 +28,7 @@ export async function makeClip(
   durationSec: number,
   bitrate = '96k'
 ): Promise<Buffer> {
+  resolveFfmpegPath();
   const id = randomUUID();
   const inPath = join(tmpdir(), `${id}-in.mp3`);
   const outPath = join(tmpdir(), `${id}-clip.mp3`);
