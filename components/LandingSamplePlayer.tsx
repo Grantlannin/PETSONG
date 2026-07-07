@@ -47,6 +47,7 @@ export function LandingSamplePlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   function stop() {
     const audio = audioRef.current;
@@ -68,6 +69,7 @@ export function LandingSamplePlayer() {
     }
 
     stop();
+    setLoadError(null);
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -77,6 +79,7 @@ export function LandingSamplePlayer() {
     void audio.play().catch(() => {
       setPlayingId(null);
       setProgress(0);
+      setLoadError('Preview clips not uploaded yet. In /lab, click “Generate landing demos” (one-time, ~5 min).');
     });
   }
 
@@ -111,8 +114,13 @@ export function LandingSamplePlayer() {
           />
         </div>
         <p className="mt-2 text-center font-mono text-[10px] text-ink/40">
-          {playingId ? '10-second preview' : 'POP · Jazz · 80\'s rock'}
+          {loadError || (playingId ? '10-second preview' : 'Scroll → tap a genre · 10 seconds each')}
         </p>
+        {loadError && (
+          <p className="mt-2 text-center text-xs text-red-600">
+            <a href="/lab" className="font-semibold underline">Open lab</a> to generate clips, then refresh this page.
+          </p>
+        )}
       </div>
 
       <audio
