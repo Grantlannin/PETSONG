@@ -53,6 +53,8 @@ export default function LabPage() {
   const [variants, setVariants] = useState<SongVariant[]>([]);
   const [sing, setSing] = useState<Record<number, SingState>>({});
   const [busyLyrics, setBusyLyrics] = useState(false);
+  const [busyLandingDemos, setBusyLandingDemos] = useState(false);
+  const [landingDemoMsg, setLandingDemoMsg] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -72,6 +74,24 @@ export default function LabPage() {
   function fillSample() {
     setValues(defaultIntakeValues());
     setError('');
+  }
+
+  async function generateLandingDemos() {
+    setBusyLandingDemos(true);
+    setLandingDemoMsg('');
+    setError('');
+    try {
+      const res = await fetch('/api/admin/generate-landing-samples', { method: 'POST' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed');
+      setLandingDemoMsg(
+        `Landing demos live (${json.samples?.length ?? 0} clips) — refresh the homepage to preview.`
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed');
+    } finally {
+      setBusyLandingDemos(false);
+    }
   }
 
   async function generateLyrics() {
@@ -150,10 +170,24 @@ export default function LabPage() {
     <main className="min-h-screen px-4 py-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-2">
         <h1 className="font-display text-2xl font-black">Song lab</h1>
-        <p className="font-mono text-xs text-ink/50">
-          intake → lyrics → hear it on MiniMax · target {TARGET_LINE_MIN}–{TARGET_LINE_MAX} lines ≈ 3 min
-        </p>
+        <div className="flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            className="text-xs font-semibold text-grass underline disabled:opacity-50"
+            onClick={generateLandingDemos}
+            disabled={busyLandingDemos}
+          >
+            {busyLandingDemos ? 'Generating landing demos… ~5 min' : 'Generate landing demos'}
+          </button>
+          <p className="font-mono text-xs text-ink/50">
+            intake → lyrics → hear it on MiniMax · target {TARGET_LINE_MIN}–{TARGET_LINE_MAX} lines ≈ 3 min
+          </p>
+        </div>
       </div>
+
+      {landingDemoMsg && (
+        <p className="mx-2 mb-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-800">{landingDemoMsg}</p>
+      )}
 
       {error && (
         <p className="mx-2 mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>

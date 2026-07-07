@@ -1,15 +1,16 @@
 import Link from 'next/link';
+import { LandingSamplePlayer } from '@/components/LandingSamplePlayer';
 import { Vinyl } from '@/lib/vinyl';
 
 export default function LandingPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="mx-auto flex max-w-5xl flex-col items-center px-6 pb-20 pt-16 text-center md:pt-24">
-        <div className="mb-8 flex items-center gap-3">
-          <Vinyl size={64} spinning />
+      <section className="mx-auto flex max-w-5xl flex-col items-center px-6 pb-12 pt-16 text-center md:pt-20">
+        <div className="mb-6 flex items-center gap-3">
+          <Vinyl size={56} spinning />
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-ink/60">
-            A record pressed for your dog
+            A song pressed for your pet
           </span>
         </div>
 
@@ -20,52 +21,60 @@ export default function LandingPage() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg text-ink/70">
-          Tell us about your pet — their name, their weird little habits, the story only you know.
-          In minutes, you&apos;ll hear two original songs written just about them — one funny,
-          one heartfelt. Pick the one that makes you cry. Or laugh. Or both.
+          Tell us their name, their weird habits, the inside jokes only your family gets.
+          We write two original songs — one funny, one heartfelt — and you pick your favorite.
         </p>
 
-        <Link href="/create" className="btn-primary mt-10 text-lg">
+        <Link href="/create" className="btn-primary mt-8 text-lg">
           Get Your Song — $37
         </Link>
         <p className="mt-3 font-mono text-xs text-ink/50">
-          2 songs generated · you pick your favorite · ready in ~2 minutes
+          2 songs · ~2 minutes · POP, Jazz, or 80&apos;s rock
         </p>
       </section>
 
+      {/* Sample previews */}
+      <section className="border-y-2 border-ink/10 bg-white/60 py-14">
+        <LandingSamplePlayer />
+      </section>
+
       {/* How it works */}
-      <section className="border-y-2 border-ink/10 bg-white/50">
-        <div className="mx-auto grid max-w-5xl gap-10 px-6 py-16 md:grid-cols-3">
+      <section className="mx-auto max-w-5xl px-6 py-16">
+        <h2 className="text-center font-display text-3xl font-black">How it works</h2>
+        <div className="mt-10 grid gap-10 md:grid-cols-3">
           {[
             {
               t: 'Tell us their story',
-              d: 'Name, breed, the sock-stealing, the 9pm zoomies — the details that make them them.',
+              d: 'Name, nicknames, the chud moments, the zoomies, the things they destroy — the details that make them them.',
             },
             {
               t: 'We write & record 2 songs',
-              d: 'A funny one and a heartfelt one. Each one is genuinely about your pet.',
+              d: 'A funny one and a heartfelt one, in your chosen genre. Every line comes from what you wrote.',
             },
             {
               t: 'Pick your favorite',
               d: 'Preview both. Keep the one you love — or unlock both for a little more.',
             },
           ].map((s, i) => (
-            <div key={s.t}>
+            <div key={s.t} className="rounded-2xl border-2 border-ink/10 bg-white p-6">
               <div className="font-display text-4xl font-bold text-tennisdark">{i + 1}</div>
               <h3 className="mt-2 font-display text-xl font-bold">{s.t}</h3>
-              <p className="mt-2 text-ink/70">{s.d}</p>
+              <p className="mt-2 text-sm text-ink/70">{s.d}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CTA repeat */}
+      {/* CTA */}
       <section className="mx-auto max-w-5xl px-6 py-20 text-center">
-        <h2 className="font-display text-3xl font-black md:text-4xl">
-          The gift they can&apos;t buy at a pet store.
+        <div className="mx-auto flex justify-center">
+          <Vinyl size={80} />
+        </div>
+        <h2 className="mt-6 font-display text-3xl font-black md:text-4xl">
+          The gift they can&apos;t buy anywhere else.
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-ink/70">
-          Birthdays, gotcha days, memorials, or just because they&apos;re a good boy. {/* placeholder copy — Grant to replace */}
+          Birthdays, gotcha days, memorials, or just because they&apos;re the gremlin you love.
         </p>
         <Link href="/create" className="btn-primary mt-8">
           Get Your Song — $37
@@ -73,7 +82,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="border-t-2 border-ink/10 py-8 text-center font-mono text-xs text-ink/40">
-        © {new Date().getFullYear()} — every song is one of one.
+        © {new Date().getFullYear()} Pet Song — every song is one of one.
       </footer>
     </main>
   );
