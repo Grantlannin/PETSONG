@@ -64,23 +64,13 @@ export const LAB_INTAKE_FIELDS: LabField[] = [
   },
   {
     key: 'personality',
-    label: 'Personality & what makes them "them"',
+    label: 'Describe their personality & then list any signature behaviors/quirks/what makes them *them*',
     type: 'textarea',
     placeholder:
-      'Goofy, gentle, dramatic — and the little habits that make your family say "that\'s so them."',
-    hint: 'Who they are on their best day, plus the quirks and routines that are unmistakably them.',
+      'Start with who they are — goofy, gentle, dramatic. Then list the rituals, behaviors, and tiny quirks your family would recognize instantly.',
+    hint: 'Personality first, then signature behaviors and quirks — all in one.',
     sample: String(SAMPLE_BRIEF.personality || ''),
     required: true,
-  },
-  {
-    key: 'signature_behaviors',
-    label: 'Signature things they do / behaviors',
-    type: 'textarea',
-    placeholder:
-      'Morning rituals, zoomies, stealing socks, weird noises, how they greet people, daily routines they never skip…',
-    hint: 'Daily rituals + famous behaviors — anything that instantly reminds people of them.',
-    sample: String(SAMPLE_BRIEF.signature_behaviors || ''),
-    required: false,
   },
   {
     key: 'favorite_things',
@@ -106,15 +96,6 @@ export const LAB_INTAKE_FIELDS: LabField[] = [
     placeholder: 'Vacuum, baths, squirrels — and the dramatic way they protest…',
     hint: 'What they refuse to tolerate and how they act out about it.',
     sample: String(SAMPLE_BRIEF.things_they_hate || ''),
-    required: false,
-  },
-  {
-    key: 'quirks_nobody_else_would_know',
-    label: 'Quirks nobody else would know',
-    type: 'textarea',
-    placeholder: 'Tiny details only someone who lives with them would notice.',
-    hint: 'Little habits or moments that make them one of a kind.',
-    sample: String(SAMPLE_BRIEF.quirks_nobody_else_would_know || ''),
     required: false,
   },
   {

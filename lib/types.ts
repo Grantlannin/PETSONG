@@ -26,12 +26,14 @@ export interface Brief extends Record<string, unknown> {
   personality?: string;
   /** @deprecated merged into personality */
   what_makes_them_them?: string;
-  /** @deprecated merged into signature_behaviors */
+  /** @deprecated merged into personality */
+  signature_behaviors?: string;
+  /** @deprecated merged into personality */
   signature_daily_rituals?: string;
   memorable_inside_jokes?: string;
-  signature_behaviors?: string;
   favorite_things?: string;
   things_they_hate?: string;
+  /** @deprecated merged into personality */
   quirks_nobody_else_would_know?: string;
   genre?: string;
   /** @deprecated removed from lab intake */

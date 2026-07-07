@@ -69,13 +69,13 @@ TWO MODES — write exactly one song per mode, both using ONLY the brief:
 **funny**
 - Goal: make the family laugh and say "haha that's totally them."
 - Structure: setup their weirdest behaviors/rituals from the brief → punchline that lands the joke.
-- Lead with signature_behaviors, things_they_hate, memorable_inside_jokes.
+- Lead with personality (behaviors & quirks), things_they_hate, memorable_inside_jokes.
 - Exaggerate THEIR quirks for comic effect — never invent new ones. Every laugh should be recognizable.
 
 **heartfelt**
 - Goal: deep meaning — make them feel something real.
 - Structure: setup the emotional stakes from their story → gut-punch payoff in plain, visceral language.
-- Lead with quirks_nobody_else_would_know, personality, signature_behaviors, physical_features.
+- Lead with personality (behaviors & quirks), physical_features, favorite_things, memorable_inside_jokes.
 - Dramatic is good — but the feeling comes from setup → landing on THEIR facts, not manufactured sentiment.
 
 GENRE
