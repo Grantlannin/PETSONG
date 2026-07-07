@@ -20,14 +20,8 @@ export const SAMPLE_BRIEF: Brief = {
     'Tennis balls (especially the squeaky one she\'s destroyed three times). Peanut butter Kongs. The creek at the end of our street. My daughter — above all else. Sunbeams on the living room rug. Car rides with the window cracked.',
   things_they_hate:
     'The vacuum cleaner — she hides in the bathtub. Baths. Fireworks. Being left alone in the car, even for two minutes. The mail carrier (she\'s convinced it\'s personal). Nail trims — the drama is Oscar-worthy.',
-  special_relationships:
-    'My daughter\'s first dog — slept outside her crib every night for two years. Protective of the kids but gentle as anything with them. Thinks the cat is her responsibility (the cat disagrees). My shadow on bad days — never more than three feet away.',
-  if_they_could_talk:
-    '"Did someone say walk? Also I love you. Also did someone say walk?" She\'d describe our family as "mine" and herself as "basically in charge." Catchphrase: a long sigh followed by putting her chin on your knee.',
   quirks_nobody_else_would_know:
-    'She only drinks water if you turn the tap on first — bowl water is beneath her. She knows which cabinet the treats are in and will sit in front of it and stare without blinking. When she\'s worried about you she brings her blankie.',
-  emotional_moments:
-    'The night I came home crying from the hospital, she dragged her blankie to the couch and put her chin on my knee until I stopped shaking. She got me through my divorce — when I couldn\'t get out of bed, she\'d sit on the floor and stare at me like "I\'m still here." Twelve years of showing up.',
+    'She only drinks water if you turn the tap on first — bowl water is beneath her. She knows which cabinet the treats are in and will sit in front of it and stare without blinking. When she\'s worried about you she brings her blankie. The night I came home crying from the hospital, she put her chin on my knee until I stopped shaking. My daughter\'s first dog — slept outside her crib every night.',
   occasion: 'birthday',
   vibe: 'heartfelt',
 };

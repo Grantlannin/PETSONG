@@ -28,10 +28,7 @@ export interface Brief extends Record<string, unknown> {
   signature_behaviors?: string;
   favorite_things?: string;
   things_they_hate?: string;
-  special_relationships?: string;
-  if_they_could_talk?: string;
   quirks_nobody_else_would_know?: string;
-  emotional_moments?: string;
   occasion: string;
   vibe?: string;
 }
