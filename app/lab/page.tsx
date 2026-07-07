@@ -170,7 +170,7 @@ export default function LabPage() {
               </p>
             </div>
             <button type="button" className="text-xs font-semibold text-grass underline" onClick={fillSample}>
-              Fill Biscuit sample
+              Fill Cricket sample
             </button>
           </div>
 
