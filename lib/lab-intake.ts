@@ -12,10 +12,16 @@ export interface LabField {
 }
 
 export const LAB_GENRES = [
-  { value: 'pop', label: 'POP' },
-  { value: 'jazz', label: 'Jazz' },
-  { value: '80s_rock', label: "80's rock" },
+  { value: 'pop', label: 'POP', bpm: '108', syllableTarget: '7–9 per line', feel: 'bouncy 4/4, clear backbeat' },
+  { value: 'jazz', label: 'Jazz', bpm: '92', syllableTarget: '6–10 per line', feel: 'swung, laid-back, conversational phrasing' },
+  { value: '80s_rock', label: "80's rock", bpm: '118', syllableTarget: '6–8 per line', feel: 'driving 4/4, punchy, anthemic' },
 ] as const;
+
+export function genreMusicGuide(genre: string): string | null {
+  const g = LAB_GENRES.find((x) => x.value === genre);
+  if (!g) return null;
+  return `${g.label}: ~${g.bpm} BPM, ${g.syllableTarget}, ${g.feel}`;
+}
 
 export function labSelectLabel(fieldKey: string, value: string): string {
   if (fieldKey === 'genre') {
@@ -130,8 +136,8 @@ export function validateIntake(values: Record<string, string>): string | null {
 }
 
 /** ~3 min target: lyric lines excluding [Section] tags. Tune via prompt, not code. */
-export const TARGET_LINE_MIN = 34;
-export const TARGET_LINE_MAX = 48;
+export const TARGET_LINE_MIN = 24;
+export const TARGET_LINE_MAX = 36;
 
 export function lineCountStatus(count: number): 'ok' | 'short' | 'long' {
   if (count >= TARGET_LINE_MIN && count <= TARGET_LINE_MAX) return 'ok';

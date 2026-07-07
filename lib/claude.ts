@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { LAB_INTAKE_FIELDS } from './lab-intake';
+import { LAB_INTAKE_FIELDS, genreMusicGuide } from './lab-intake';
 import { LYRICS_SYSTEM_PROMPT } from './lyrics-prompt';
 import type { Brief, SongVariant } from './types';
 
@@ -80,6 +80,18 @@ TWO MODES — write exactly one song per mode, both using ONLY the brief:
 
 GENRE
 - The brief includes a genre (POP, Jazz, or 80's rock). Both style_prompts MUST use that genre — match BPM, instrumentation, and vocal style to it.
+
+SINGABILITY (write for the beat — MiniMax sings your lyrics as-is)
+- These lyrics will be sung by a music AI, not read as poetry. If the meter is wrong, every line sounds forced.
+- BEFORE writing each song: pick a BPM from the genre guide and stick to it in style_prompt. Write every line to fit that tempo.
+- **Syllable discipline:** keep lines in a tight range within each section. POP/rock: mostly 6–9 syllables. Jazz: 6–10, swung phrasing.
+- **Short beats long.** One idea per line. Split overcrowded sentences into two lines instead of cramming.
+- **Verse lines:** conversational rhythm — stress falls naturally on beat 1 and 3. Read each line aloud while tapping quarter notes at the target BPM. If you rush or drag, rewrite.
+- **Chorus lines:** shorter than verses (6–8 syllables). Simple words. The hook line must be easy to shout/sing along to. Repeat the full chorus 3 times in the lyrics (same words each time).
+- **Rhyme:** loose/end-rhyme is fine — perfect rhyme is NOT required. Natural speech rhythm beats forced rhyme every time.
+- **Banned for singability:** lines over 12 syllables; tongue-twisters; 4+ adjectives in a row; clauses stacked with commas; words crammed in just to rhyme.
+- The style_prompt BPM and the lyric density MUST match — don't write 130 BPM rock words at 90 syllables/minute.
+
 STRUCTURE
 - Pet name in the title and in the first two lyric lines of Verse 1
 - Use nickname(s) from the brief where natural
@@ -100,7 +112,7 @@ If a line does neither — cut it or rewrite.`;
  */
 const OUTPUT_CONTRACT = `You will receive a customer brief about one pet. Write TWO complete, distinct personalized songs using ONLY facts from that brief — one funny, one heartfelt.
 
-For each song also write a style_prompt for the music model: under 300 characters, shaped like "<key>, <BPM> BPM, <genre from brief>, <vocal type>, <2-3 mood words>". Use the customer's chosen genre for both songs.
+For each song also write a style_prompt for the music model: under 300 characters, shaped like "<key>, <BPM> BPM, <genre from brief>, <vocal type>, <2-3 mood words>". Use the customer's chosen genre for both songs. BPM must match the genre guide in the brief.
 
 Respond with ONLY valid JSON, no markdown fences, exactly this shape:
 {
@@ -109,8 +121,18 @@ Respond with ONLY valid JSON, no markdown fences, exactly this shape:
     { "arc": "heartfelt",  "title": "...", "style_prompt": "...", "lyrics": "..." }
   ]
 }
-Lyrics formatting: section tags on their own line exactly as [Verse], [Chorus], [Bridge]; one lyric line per line using \\n; blank line (\\n\\n) between sections. Titles include the pet's name.
-Each song should contain approximately 36–44 lyric lines (excluding section tags) for roughly 3 minutes of music. MiniMax has no duration knob — length is controlled entirely by lyric line count.`;
+Lyrics formatting: section tags on their own line exactly as [Verse], [Chorus], [Bridge], [Outro]; one lyric line per line using \\n; blank line (\\n\\n) between sections. Titles include the pet's name.
+
+Required song form (repeat chorus lyrics verbatim each time):
+[Verse] — 4 lines
+[Chorus] — 4 lines (hook-heavy, singable)
+[Verse] — 4 lines
+[Chorus] — same 4 lines as above
+[Bridge] — 2–4 lines
+[Chorus] — same 4 lines as above
+[Outro] — 1–2 lines (optional)
+
+Total: ~26–34 lyric lines including the 3 chorus repeats. Each line ~6–9 syllables unless genre guide says otherwise. MiniMax has no duration knob — length is controlled by line count and section repeats.`;
 
 const FIELD_LABELS = Object.fromEntries(LAB_INTAKE_FIELDS.map((f) => [f.key, f.label]));
 
@@ -120,6 +142,11 @@ function formatBriefForModel(brief: Brief | Record<string, string>): string {
     const value = String(raw ?? '').trim();
     if (!value) continue;
     sections.push(`### ${FIELD_LABELS[key] ?? key}\n${value}`);
+  }
+  const genre = String(brief.genre ?? '').trim();
+  const guide = genre ? genreMusicGuide(genre) : null;
+  if (guide) {
+    sections.push(`### Genre music guide (match style_prompt + syllable count to this)\n${guide}`);
   }
   return sections.join('\n\n');
 }

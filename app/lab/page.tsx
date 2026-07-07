@@ -11,6 +11,7 @@ import {
   TARGET_LINE_MIN,
   validateIntake,
 } from '@/lib/lab-intake';
+import { syllableBadgeClass, syllableLint } from '@/lib/lyric-lint';
 import { LYRICS_SYSTEM_PROMPT } from '@/lib/lyrics-prompt';
 import type { SongVariant } from '@/lib/types';
 
@@ -27,11 +28,13 @@ function lint(v: SongVariant, petName: string) {
     ? (v.lyrics.toLowerCase().match(new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length
     : 0;
   const first2 = lines.slice(0, 2).join(' ').toLowerCase();
+  const syllables = syllableLint(v.lyrics);
   return {
     lineCount: lines.length,
     lineStatus: lineCountStatus(lines.length),
     nameCount,
     nameEarly: name ? first2.includes(name) : false,
+    syllables,
   };
 }
 
@@ -308,6 +311,10 @@ export default function LabPage() {
                     </span>
                     <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] ${l.nameEarly ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700'}`}>
                       {l.nameEarly ? 'name early' : 'name NOT early'}
+                    </span>
+                    <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] ${syllableBadgeClass(l.syllables.status)}`}>
+                      ~{l.syllables.avg} syl/line · max {l.syllables.maxLine}
+                      {l.syllables.longLines > 0 ? ` · ${l.syllables.longLines} too long` : ''}
                     </span>
                   </div>
 
