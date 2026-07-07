@@ -7,6 +7,8 @@ export interface LandingSample {
   title: string;
   src: string;
   durationSec: number;
+  /** Seconds into the full song where the 10s preview begins (bridge/chorus). */
+  previewStartSec?: number;
 }
 
 /** 10-second landing page demos — regenerate via scripts/generate-landing-samples.ts */

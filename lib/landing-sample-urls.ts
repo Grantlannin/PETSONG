@@ -11,6 +11,21 @@ export function landingSampleSrc(genre: string): string {
   return `/samples/${genre}.mp3`;
 }
 
+export function landingSampleMetaUrl(): string | null {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, '');
+  if (!supabaseUrl) return null;
+  return `${supabaseUrl}/storage/v1/object/public/${BUCKET}/landing/meta.json`;
+}
+
+export interface LandingSampleMeta {
+  [genre: string]: {
+    title: string;
+    arc: string;
+    previewStartSec: number;
+    style_prompt?: string;
+  };
+}
+
 export function landingSamplesWithUrls(): LandingSample[] {
   return LANDING_SAMPLES.map((s) => ({
     ...s,

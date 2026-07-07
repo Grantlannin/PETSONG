@@ -1,11 +1,13 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { landingSamplesWithUrls } from '@/lib/landing-sample-urls';
+import { useEffect, useRef, useState } from 'react';
+import {
+  landingSampleMetaUrl,
+  landingSamplesWithUrls,
+  type LandingSampleMeta,
+} from '@/lib/landing-sample-urls';
 import type { LandingSample } from '@/lib/landing-samples';
 import { Vinyl } from '@/lib/vinyl';
-
-const SAMPLES = landingSamplesWithUrls();
 
 function SampleCard({
   sample,
@@ -37,7 +39,7 @@ function SampleCard({
         <Vinyl size={52} spinning={active} />
       </div>
       <p className="mt-4 font-mono text-[10px] text-ink/40">
-        {active ? 'Playing 10s preview…' : 'Tap to preview · 10 seconds'}
+        {active ? 'Playing chorus & bridge…' : 'Tap to preview · 10 seconds'}
       </p>
     </button>
   );
@@ -45,9 +47,35 @@ function SampleCard({
 
 export function LandingSamplePlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [samples, setSamples] = useState<LandingSample[]>(() => landingSamplesWithUrls());
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const startSecRef = useRef(0);
+
+  useEffect(() => {
+    const metaUrl = landingSampleMetaUrl();
+    if (!metaUrl) return;
+
+    fetch(metaUrl, { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((meta: LandingSampleMeta | null) => {
+        if (!meta) return;
+        setSamples((prev) =>
+          prev.map((s) => {
+            const m = meta[s.genre];
+            if (!m) return s;
+            return {
+              ...s,
+              title: m.title || s.title,
+              arc: (m.arc as LandingSample['arc']) || s.arc,
+              previewStartSec: m.previewStartSec,
+            };
+          })
+        );
+      })
+      .catch(() => {});
+  }, []);
 
   function stop() {
     const audio = audioRef.current;
@@ -55,12 +83,13 @@ export function LandingSamplePlayer() {
       audio.pause();
       audio.currentTime = 0;
     }
+    startSecRef.current = 0;
     setPlayingId(null);
     setProgress(0);
   }
 
   function play(id: string) {
-    const sample = SAMPLES.find((s) => s.id === id);
+    const sample = samples.find((s) => s.id === id);
     if (!sample) return;
 
     if (playingId === id) {
@@ -73,14 +102,24 @@ export function LandingSamplePlayer() {
     const audio = audioRef.current;
     if (!audio) return;
 
+    const startSec = sample.previewStartSec ?? 0;
+    startSecRef.current = startSec;
+
+    const begin = () => {
+      audio.currentTime = startSec;
+      setPlayingId(id);
+      void audio.play().catch(() => {
+        setPlayingId(null);
+        setProgress(0);
+        setLoadError(
+          'Preview clips not uploaded yet. In /lab, click “Generate landing demos” (one-time, ~5 min).'
+        );
+      });
+    };
+
     audio.src = sample.src;
-    audio.currentTime = 0;
-    setPlayingId(id);
-    void audio.play().catch(() => {
-      setPlayingId(null);
-      setProgress(0);
-      setLoadError('Preview clips not uploaded yet. In /lab, click “Generate landing demos” (one-time, ~5 min).');
-    });
+    if (audio.readyState >= 1) begin();
+    else audio.addEventListener('loadedmetadata', begin, { once: true });
   }
 
   return (
@@ -89,13 +128,13 @@ export function LandingSamplePlayer() {
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-ink/50">Try before you buy</p>
         <h2 className="mt-2 font-display text-2xl font-black md:text-3xl">Hear what yours could sound like</h2>
         <p className="mx-auto mt-2 max-w-lg text-sm text-ink/60">
-          Real songs generated from a real pet story — scroll through genres and play a 10-second preview.
+          Real songs from a real pet story — previews jump to the chorus and bridge, not the intro.
         </p>
       </div>
 
       <div className="relative mt-8">
         <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 scroll-smooth [scrollbar-width:thin] [scrollbar-color:#2F5D3A_#FBF7EF]">
-          {SAMPLES.map((sample) => (
+          {samples.map((sample) => (
             <SampleCard
               key={sample.id}
               sample={sample}
@@ -128,15 +167,14 @@ export function LandingSamplePlayer() {
         preload="none"
         onTimeUpdate={(e) => {
           const audio = e.currentTarget;
-          const sample = SAMPLES.find((s) => s.id === playingId);
-          const max = sample?.durationSec ?? 10;
-          setProgress(Math.min(1, audio.currentTime / max));
-          if (audio.currentTime >= max) stop();
+          const sample = samples.find((s) => s.id === playingId);
+          const duration = sample?.durationSec ?? 10;
+          const start = startSecRef.current;
+          const elapsed = audio.currentTime - start;
+          setProgress(Math.min(1, Math.max(0, elapsed / duration)));
+          if (audio.currentTime >= start + duration) stop();
         }}
         onEnded={stop}
-        onPause={() => {
-          if (audioRef.current?.currentTime === 0) setProgress(0);
-        }}
       />
     </section>
   );

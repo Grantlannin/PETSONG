@@ -22,11 +22,12 @@ function resolveFfmpegPath(): string {
   );
 }
 
-/** Trim a full song to a short mp3 clip. */
+/** Trim a full song to a short mp3 clip, optionally starting at startSec. */
 export async function makeClip(
   fullMp3: Buffer,
   durationSec: number,
-  bitrate = '96k'
+  bitrate = '96k',
+  startSec = 0
 ): Promise<Buffer> {
   resolveFfmpegPath();
   const id = randomUUID();
@@ -36,7 +37,7 @@ export async function makeClip(
 
   await new Promise<void>((resolve, reject) => {
     ffmpeg(inPath)
-      .setStartTime(0)
+      .setStartTime(startSec)
       .duration(durationSec)
       .audioBitrate(bitrate)
       .format('mp3')
